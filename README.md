@@ -16,8 +16,6 @@ claude plugin install knox@qoris
 
 That's it. Knox is now active in every Claude Code session.
 
-> **Auth note:** Both commands use your existing git credentials. If you have `gh auth login` configured they work as-is. If you hit a permissions error, set `GITHUB_TOKEN=<your-pat>` before running them.
-
 **Other install options:**
 
 ```bash
