@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Usage: knox-test "COMMAND"
+# Prints:  BLOCK <rule-id>  <reason>      if Knox blocks
+#          ALLOW                          if Knox allows
+# Exit 0 if BLOCK, exit 1 if ALLOW (the inverse of typical hooks so grep-friendly).
+#
+# This wrapper is unambiguous — it accounts for both exit-2 hard blocks and
+# exit-0 + permissionDecision=deny soft blocks.
+
+if [ -z "$1" ]; then
+  echo "Usage: knox-test \"COMMAND\"" >&2
+  exit 2
+fi
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PLUGIN_ROOT="$( dirname "$SCRIPT_DIR" )"
+export CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT"
+
+# Build JSON input without using eval/printf tricks that could be interpreted
+INPUT=$(node -e 'process.stdout.write(JSON.stringify({tool_name:"Bash",tool_input:{command:process.argv[1]}}))' "$1")
+
+OUTPUT=$(echo "$INPUT" | node "$PLUGIN_ROOT/bin/knox-check" 2>&1)
+EXIT=$?
+
+# Exit 2 = hard block
+if [ "$EXIT" -eq 2 ]; then
+  # Reason is on stderr, captured in OUTPUT
+  echo "BLOCK $OUTPUT"
+  exit 0
+fi
+
+# Exit 0 + permissionDecision=deny = soft block
+if echo "$OUTPUT" | grep -q '"permissionDecision":"deny"'; then
+  REASON=$(echo "$OUTPUT" | node -e 'let d=""; process.stdin.on("data",c=>d+=c); process.stdin.on("end",()=>{try{const o=JSON.parse(d);console.log(o.hookSpecificOutput.permissionDecisionReason||"blocked")}catch(e){console.log("blocked")}})')
+  echo "BLOCK $REASON"
+  exit 0
+fi
+
+# Exit 0 + sanitized = command was modified (still technically allowed after strip)
+if echo "$OUTPUT" | grep -q '"permissionDecision":"allow"'; then
+  if echo "$OUTPUT" | grep -q 'updatedInput'; then
+    echo "SANITIZED"
+    exit 1
+  fi
+fi
+
+echo "ALLOW"
+exit 1

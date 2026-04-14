@@ -1,5 +1,16 @@
 # Knox Changelog
 
+## [1.1.5] — 2026-04-14
+
+### Added
+- **README "Known limitations and red-team results" section** — transparent documentation of the 1.1% bypass rate, what specifically is not caught at `standard` preset, and why (design vs. real gap vs. LLM's job)
+- **`bin/knox-test` wrapper** — unambiguous `BLOCK`/`ALLOW` harness for red-teaming, handles both hard-block (exit 2) and soft-block (exit 0 + JSON decision) paths
+- **`/redteam` skill** at `skills/redteam/SKILL.md` — systematic 8-category attack walkthrough usable by any Claude session
+- **Custom-config recipes** in README for closing the known gaps: `.env` blocks, external curl blocks, interactive shell blocks, suspicious-binary blocks
+
+### Fixed
+- `rm -rf ~/test` (cleanup inside own home dir) now ALLOWED — was false-positive blocked because `/home` was in `SENSITIVE_TARGETS`. Added differentiated check: `/home/<otheruser>` still blocks, `/home/<current_user>/...` is allowed.
+
 ## [1.1.4] — 2026-04-14
 
 ### Fixed
