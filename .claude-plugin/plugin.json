@@ -7,7 +7,6 @@
   "repository": "https://github.com/qoris-ai/knox-claude",
   "license": "MIT",
   "keywords": ["security", "enforcement", "audit", "safety", "policy"],
-  "hooks": "./hooks/hooks.json",
   "userConfig": {
     "preset": {
       "title": "Security Preset",
