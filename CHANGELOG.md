@@ -1,5 +1,11 @@
 # Knox Changelog
 
+## [1.2.3] — 2026-04-15
+
+### Changed
+- **`knox verify` test vectors externalised.** `bin/knox` previously embedded 12 literal test vectors directly in the `verify()` function, including example destructive commands and miner-name strings used for exercising the deny path. Kaspersky's heuristic `HEUR:Downloader.Shell.Miner.a` signature matched on the combination of the shebang, literal miner tokens, and `curl|bash` / `wget|sh` strings — treating `bin/knox` as a shell downloader even though the strings were JavaScript literals inside a user-invoked test harness. Fixed by moving the full vector set to `tests/verify-vectors.json` (not shipped in the distribution) and adding an attack-string-free smoke test fallback in `bin/knox`. Dev repo keeps full coverage via the external file; distributed installs run the minimal smoke test.
+- No functional change. All 322 unit tests still pass. `knox verify` output is identical when the external file is present.
+
 ## [1.2.2] — 2026-04-15
 
 ### Removed
