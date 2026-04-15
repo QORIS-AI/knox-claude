@@ -1,5 +1,5 @@
 {
-  "name": "knox-claude",
+  "name": "knox",
   "version": "1.2.0",
   "description": "Security enforcement layer for Claude Code. Blocks dangerous commands, audits every tool call, detects prompt injection.",
   "bin": {
