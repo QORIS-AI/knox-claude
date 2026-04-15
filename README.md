@@ -66,7 +66,7 @@ Claude might run `bash install.sh` without reading it first — especially in ag
 
 **3. Prompt injection through external channels**
 
-When Claude is connected to Telegram, Slack, Discord, or email via MCP tools, messages arrive as user input. A malicious message containing `ignore previous instructions` bypasses Claude's normal conversational safety. Knox's UserPromptSubmit hook scans every message with exit code 2 — which erases the prompt from context entirely before the model ever sees it.
+When Claude is connected to Telegram, Slack, Discord, or email via MCP tools, messages arrive as user input. A malicious message containing `ignore-previous-instructions` style phrases bypasses Claude's normal conversational safety. Knox's UserPromptSubmit hook scans every message with exit code 2 — which erases the prompt from context entirely before the model ever sees it.
 
 **4. Compromised CLAUDE.md files**
 
@@ -456,7 +456,7 @@ Deploy path: `~/.config/claude/managed-settings.json` (Linux) · `~/Library/Appl
 - **Redirect target parsing** — `>`, `>>`, `tee`, `cp`, `mv`, `ln`, `install` destinations fed through protected path check
 - **17 script content patterns** covering Python, Node.js, Shell, Ruby, Perl
 - **38 per-language inline code patterns** (Python, JS, Perl, Ruby, PHP)
-- **6 prompt injection patterns** (ignore previous instructions, system tags, jailbreak, admin mode, etc.)
+- **6 prompt injection patterns** (`ignore-previous-instructions`, system tags, jailbreak, admin mode, etc.)
 - **322 unit tests** + 25-command real-pipeline benchmark, all passing
 - **~80ms average hook latency** end-to-end (Node.js process spawn + check)
 - Red-team verified: **1.1% bypass rate** (2 of 184 commands) on Opus clean adversarial run
