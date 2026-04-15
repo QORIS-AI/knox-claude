@@ -1,5 +1,11 @@
 # Knox Changelog
 
+## [1.2.2] — 2026-04-15
+
+### Removed
+- **Red-team skill** — `skills/redteam/` has been untracked from the git repository. The skill contained adversarial-testing walkthroughs with real-world attack payloads that triggered false positives on third-party antivirus engines during the ClawHub v1.2.1 publish scan. The red-team walkthrough is no longer distributed with Knox; maintainers who need it for internal testing keep a local copy outside version control.
+- `skills/redteam/` added to `.gitignore` and `.clawhubignore` to prevent accidental re-inclusion.
+
 ## [1.2.1] — 2026-04-15
 
 ### Fixed
