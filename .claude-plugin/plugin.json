@@ -1,6 +1,6 @@
 {
   "name": "knox",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "Security enforcement layer for Claude Code. Blocks dangerous commands, audits every tool call, detects prompt injection.",
   "author": { "name": "Qoris", "email": "apps@qoris.ai", "url": "https://qoris.ai" },
   "homepage": "https://qoris.ai/knox",
@@ -10,19 +10,19 @@
   "userConfig": {
     "preset": {
       "title": "Security preset",
-      "description": "Type one of: paranoid | strict | standard | minimal | disabled. Default 'standard'. Easier than this text field: run `/knox:preset <name>` in any Claude Code session, or `knox preset <name>` from a terminal — both override this value. (Claude Code 2.1.x renders this as a text input; checkbox UI for boolean userConfig isn't shipped yet.)",
+      "description": "How strict Knox is. Allowed: paranoid | strict | standard | minimal | disabled.\n• paranoid — every block becomes an interactive 'ask' prompt instead of an outright deny\n• strict — adds path protection + full sudo block on top of standard\n• standard (default) — blocks pipe-to-shell, bash -c, eval, exfiltration; sanitizes sudo\n• minimal — only miners + destruction + self-protection rules\n• disabled — audit-only mode (self-protection stays on, all enforcement off)\nEasier than this text field: type /knox:preset <name> in any Claude Code session, or run `knox preset <name>` in a terminal — both validate input and override this value. If you typo here, Knox silently falls back to 'standard' and surfaces a warning in `knox status`.",
       "type": "string",
       "default": "standard"
     },
     "webhook": {
-      "title": "Webhook URL",
-      "description": "Webhook URL for security alerts (optional, leave blank to skip)",
+      "title": "Webhook URL (security alerts)",
+      "description": "Optional. HTTPS URL Knox POSTs to when a high/critical severity rule blocks something. JSON body shape: { timestamp, rule_id, command, severity, host, session_id }. Works with Slack incoming webhooks (https://hooks.slack.com/...), Discord webhooks, or any custom HTTPS endpoint that accepts JSON. Leave blank to disable alerts (default).",
       "type": "string",
       "sensitive": false
     },
     "audit_path": {
-      "title": "Audit Log Path",
-      "description": "Audit log directory path (leave blank for default: ~/.local/share/knox/audit)",
+      "title": "Audit log directory",
+      "description": "Optional. Directory where Knox writes JSONL audit files — one file per day, e.g. 2026-05-09.jsonl. Each tool call is logged with: command, decision (allow / deny / sanitized), rule_id, host, session_id, timestamp. View with `knox audit` (CLI) or /knox:audit (slash command). Default: ~/.local/share/knox/audit. Leave blank to use default.",
       "type": "string"
     }
   }

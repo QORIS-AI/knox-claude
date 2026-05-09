@@ -1,5 +1,15 @@
 # Knox Changelog
 
+## [2.3.3] — 2026-05-09
+
+User-facing copy improvements only. No code changes.
+
+### Changed
+- **Better `/plugin` UI hints.** Each `userConfig` field now ships with enough context that a user landing in the config UI for the first time can self-serve:
+  - **`preset`** — explains what each of the 5 preset names actually does (one bullet each), points at the `/knox:preset` slash command and `knox preset` CLI as the easier alternative, mentions the fail-closed-to-standard behavior on typos.
+  - **`webhook`** — describes the trigger condition (high/critical blocks), the JSON body shape (`{ timestamp, rule_id, command, severity, host, session_id }`), and the compatible endpoints (Slack incoming webhooks, Discord, custom HTTPS).
+  - **`audit_path`** — explains the file layout (one JSONL file per day), the per-event schema (command, decision, rule_id, host, session_id), and how to read it (`knox audit` / `/knox:audit`).
+
 ## [2.3.2] — 2026-05-09
 
 The v2.3.0/2.3.1 boolean userConfig design didn't survive contact with Claude Code 2.1.x. The MCPB spec at github.com/anthropics/mcpb says boolean fields render as `Checkbox/toggle`, but Claude Code's `/plugin` UI currently renders them as **text inputs** where the user has to type `true` or `false`. Adding `default: false` (per the MCPB example) didn't change the rendering — that's a Claude Code TUI limitation, not a plugin author fix. Confirmed by zero real plugins using boolean userConfig anywhere on GitHub or in the public marketplace.
