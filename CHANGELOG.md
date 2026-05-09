@@ -1,5 +1,16 @@
 # Knox Changelog
 
+## [2.3.5] — 2026-05-09
+
+Hotfix on top of v2.3.4 — caught by end-to-end testing right after release.
+
+### Fixed
+- **`.knox.json`, `.knox.local.json`, `.knox/*`, `.claude/settings*` are now ALWAYS blocked from Write/Edit, regardless of preset.** Previously at `preset=disabled`, an agent could overwrite Knox's own config files (or Claude Code's settings.json containing `pluginConfigs.knox@qoris.options.preset`) and lock the user out of ever re-enabling enforcement. The `disabled` preset description already promised "self-protection rules and audit logging stay on" — this brings the actual behavior into alignment with that promise. Other protected paths (`.bashrc`, `AGENTS.md`, `~/.ssh/`, etc.) remain allowed at `disabled`.
+- **Mirrors the existing Bash self-protection model** in `checkCommand` (env-var override, alias shadow, knox-process kill, variable indirection — all unconditional).
+
+### Verified
+4 new unit tests in `tests/unit/check.test.js` confirm `.knox.json`, `.knox.local.json`, `.knox/audit/...`, and `.claude/settings.json` all block at `preset=disabled`. End-to-end hook simulation: 13/13 scenarios pass (was 12/13 in v2.3.4).
+
 ## [2.3.4] — 2026-05-09
 
 Hotfix on top of v2.3.3 — `/plugin` UI changes were silently shadowed by `~/.config/knox/config.json` written by `knox preset` CLI. Reported live: user set `preset: disabled` in `/plugin`, ran `/reload-plugins`, and Knox kept blocking. Two reasons: precedence inversion + the two paths writing to different files.

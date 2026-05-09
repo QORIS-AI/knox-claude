@@ -91,6 +91,31 @@ describe('checkCommand', () => {
       expect(checkWritePath('.bashrc', disabledCfg)).toBeNull();
     });
 
+    test('checkWritePath BLOCKS .knox.json even at disabled (self-protect)', () => {
+      const r = checkWritePath('.knox.json', disabledCfg);
+      expect(r).not.toBeNull();
+      expect(r.blocked).toBe(true);
+      expect(r.reason).toMatch(/self-protection/);
+    });
+
+    test('checkWritePath BLOCKS .knox.local.json even at disabled (self-protect)', () => {
+      const r = checkWritePath('.knox.local.json', disabledCfg);
+      expect(r).not.toBeNull();
+      expect(r.blocked).toBe(true);
+    });
+
+    test('checkWritePath BLOCKS .claude/settings.json even at disabled (self-protect)', () => {
+      const r = checkWritePath('.claude/settings.json', disabledCfg);
+      expect(r).not.toBeNull();
+      expect(r.blocked).toBe(true);
+    });
+
+    test('checkWritePath BLOCKS .knox/audit/ even at disabled (self-protect)', () => {
+      const r = checkWritePath('.knox/audit/2026-05-09.jsonl', disabledCfg);
+      expect(r).not.toBeNull();
+      expect(r.blocked).toBe(true);
+    });
+
     test('checkReadPath allows ~/.ssh/id_rsa', () => {
       expect(checkReadPath('/home/u/.ssh/id_rsa', disabledCfg)).toBeNull();
     });
